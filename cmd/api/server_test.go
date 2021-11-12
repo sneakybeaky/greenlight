@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/matryer/is"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -9,22 +10,15 @@ import (
 
 func TestGETHealthcheck(t *testing.T) {
 
-	app := Application{Config: Config{
-		Env: "test",
-	}}
+	is := is.New(t)
 
-	t.Run("Get status", func(t *testing.T) {
+	srv, err := newServer()
+	is.NoErr(err)
 
-		request, _ := http.NewRequest(http.MethodGet, "/v1/healthcheck", nil)
-		response := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodGet, "/v1/healthcheck", nil)
+	w := httptest.NewRecorder()
+	srv.ServeHTTP(w, req)
+	is.Equal(w.Code, http.StatusOK)
+	is.True(strings.Contains(w.Body.String(), "status: available"))
 
-		app.healthcheckHandler(response, request)
-
-		got := response.Body.String()
-		want := "status: available"
-
-		if !strings.Contains(got, want) {
-			t.Errorf("got %q, want %q", got, want)
-		}
-	})
 }

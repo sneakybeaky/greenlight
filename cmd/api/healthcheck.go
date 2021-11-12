@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-func (app *Application) healthcheckHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "status: available")
-	fmt.Fprintf(w, "environment: %s\n", app.Config.Env)
-	fmt.Fprintf(w, "version: %s\n", version)
+func (s *server) healthcheckHandler() http.HandlerFunc {
+	return func(writer http.ResponseWriter, request *http.Request) {
+		fmt.Fprintln(writer, "status: available")
+	}
 }
