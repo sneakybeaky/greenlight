@@ -4,7 +4,6 @@ import (
 	"github.com/matryer/is"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 )
 
@@ -19,6 +18,6 @@ func TestGETHealthcheck(t *testing.T) {
 	w := httptest.NewRecorder()
 	srv.ServeHTTP(w, req)
 	is.Equal(w.Code, http.StatusOK)
-	is.True(strings.Contains(w.Body.String(), "status: available"))
+	is.Equal(w.Body.String(), "{\"status\": \"available\", \"environment\": \"development\", \"version\": \"1.0.0\"}")
 
 }
